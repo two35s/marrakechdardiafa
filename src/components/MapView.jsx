@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { 
+  X, MagnifyingGlass, XCircle, CurrencyCircleDollar, CaretDown, Bed, 
+  FadersHorizontal, ArrowsDownUp, SmileySad, Heart, MapPin, CheckCircle, 
+  SealCheck, Building, Stack, BoundingBox, List, CaretRight
+} from '@phosphor-icons/react';
 
 
 // Custom marker SVG for a premium look
@@ -29,8 +34,8 @@ const createMarkerIcon = (price, isActive) => {
         align-items: center;
         justify-content: center;
       ">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        <svg viewBox="0 0 256 256" fill="currentColor" style="width: 20px; height: 20px;">
+          <path d="M128,64a40,40,0,1,0,40,40A40,40,0,0,0,128,64Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,128Zm0-112a88.1,88.1,0,0,0-88,88c0,31.4,14.5,64.7,40.6,93,22.1,24,47.4,30.3,47.4,30.3a8,8,0,0,0,1.4.1,8,8,0,0,0,1.4-.1s25.3-6.3,47.4-30.3c26.1-28.3,40.6-61.6,40.6-93A88.1,88.1,0,0,0,128,16Zm0,199.1C111.4,198.8,56,151.7,56,104a72,72,0,0,1,144,0C200,151.7,144.6,198.8,128,215.1Z"/>
         </svg>
       </div>
     `,
@@ -188,18 +193,14 @@ export default function MapView({ properties, onViewDetail }) {
             <h2 className="map-sidebar-title">Catalogue</h2>
           </div>
           <button className="map-sidebar-close mobile-only" onClick={() => setListOpen(false)}>
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 5l10 10M15 5L5 15"/>
-            </svg>
+            <X size={20} weight="bold" />
           </button>
         </div>
 
         {/* Search & Filters */}
         <div className="map-filters">
           <div className="map-search-input">
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/>
-            </svg>
+            <MagnifyingGlass size={18} weight="regular" />
             <input
               type="text"
               placeholder="District, Area"
@@ -208,16 +209,14 @@ export default function MapView({ properties, onViewDetail }) {
             />
             {searchQuery && (
               <button className="map-search-clear" onClick={() => setSearchQuery('')} aria-label="Clear search">
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                <XCircle size={16} weight="fill" />
               </button>
             )}
           </div>
 
           <div className="map-filter-row">
             <div className="map-filter-select">
-              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <circle cx="10" cy="10" r="8"/><path d="M10 6v4l2 2"/>
-              </svg>
+              <CurrencyCircleDollar size={18} weight="regular" />
               <select value={priceFilter} onChange={(e) => setPriceFilter(e.target.value)}>
                 <option value="">Price</option>
                 <option value="0-3000">0 – 3000 MAD</option>
@@ -225,13 +224,11 @@ export default function MapView({ properties, onViewDetail }) {
                 <option value="6000-10000">6000 – 10000 MAD</option>
                 <option value="10000-99999">10000+ MAD</option>
               </select>
-              <svg className="map-filter-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 8l4 4 4-4"/></svg>
+              <CaretDown className="map-filter-chevron" size={16} weight="regular" />
             </div>
 
             <div className="map-filter-select">
-              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <rect x="3" y="4" width="14" height="12" rx="2"/><path d="M3 9h14"/>
-              </svg>
+              <Bed size={18} weight="regular" />
               <select value={roomsFilter} onChange={(e) => setRoomsFilter(e.target.value)}>
                 <option value="">Rooms</option>
                 <option value="1">1 room</option>
@@ -239,7 +236,7 @@ export default function MapView({ properties, onViewDetail }) {
                 <option value="3">3 rooms</option>
                 <option value="4+">4+ rooms</option>
               </select>
-              <svg className="map-filter-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 8l4 4 4-4"/></svg>
+              <CaretDown className="map-filter-chevron" size={16} weight="regular" />
             </div>
 
             <button
@@ -247,9 +244,7 @@ export default function MapView({ properties, onViewDetail }) {
               onClick={clearFilters}
               title={activeFilterCount > 0 ? 'Clear all filters' : 'No active filters'}
             >
-              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M3 5h14M6 10h8M9 15h2"/>
-              </svg>
+              <FadersHorizontal size={18} weight="regular" />
               Filters
               {activeFilterCount > 0 && (
                 <span className="map-filter-count">{activeFilterCount}</span>
@@ -260,9 +255,7 @@ export default function MapView({ properties, onViewDetail }) {
           <div className="map-results-row">
             <span className="map-results-count">{filteredProperties.length} results</span>
             <div className="map-sort-select">
-              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M4 6h12M6 10h8M8 14h4"/>
-              </svg>
+              <ArrowsDownUp size={18} weight="regular" />
               <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                 <option value="">Sort</option>
                 <option value="price-asc">Price: Low → High</option>
@@ -270,7 +263,7 @@ export default function MapView({ properties, onViewDetail }) {
                 <option value="area-desc">Largest Area</option>
                 <option value="rooms-desc">Most Rooms</option>
               </select>
-              <svg className="map-filter-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 8l4 4 4-4"/></svg>
+              <CaretDown className="map-filter-chevron" size={16} weight="regular" />
             </div>
           </div>
         </div>
@@ -278,12 +271,7 @@ export default function MapView({ properties, onViewDetail }) {
         <div className="map-sidebar-list">
           {filteredProperties.length === 0 ? (
             <div className="map-empty-state">
-              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <circle cx="24" cy="24" r="20"/>
-                <path d="M16 28s2 4 8 4 8-4 8-4"/>
-                <circle cx="18" cy="20" r="1.5" fill="currentColor" stroke="none"/>
-                <circle cx="30" cy="20" r="1.5" fill="currentColor" stroke="none"/>
-              </svg>
+              <SmileySad size={48} weight="regular" />
               <p>No properties match your filters</p>
               <button className="map-empty-clear" onClick={clearFilters}>Clear filters</button>
             </div>
@@ -312,39 +300,34 @@ export default function MapView({ properties, onViewDetail }) {
                       onClick={(e) => toggleLike(e, prop.id)}
                       aria-label={likedProperties[prop.id] ? 'Unlike' : 'Like'}
                     >
-                      <svg viewBox="0 0 20 20" fill={likedProperties[prop.id] ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5">
-                        <path d="M10 17s-7-4.5-7-9a7 7 0 0114 0c0 4.5-7 9-7 9z"/>
-                      </svg>
+                      <Heart size={20} weight={likedProperties[prop.id] ? 'fill' : 'regular'} />
                     </button>
                   </div>
                   <div className="map-card-address">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <path d="M8 1C5.24 1 3 3.24 3 6c0 3.75 5 9 5 9s5-5.25 5-9c0-2.76-2.24-5-5-5z"/>
-                      <circle cx="8" cy="6" r="2"/>
-                    </svg>
+                    <MapPin size={16} weight="regular" />
                     {prop.address}
                   </div>
                   <div className="map-card-badges">
                     {prop.badges && prop.badges.map(badge => (
                       <span key={badge} className={`badge badge-${badge.toLowerCase()}`}>
-                        {badge === 'Available' && <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 8l4 4 6-6"/></svg>}
-                        {badge === 'Verified' && <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8 2l1.8 3.6L14 6.3l-3 2.9.7 4.1L8 11.4l-3.7 1.9.7-4.1L2 6.3l4.2-.7L8 2z"/></svg>}
-                        {badge === 'Realtor' && <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="12" height="10" rx="1"/><path d="M5 7h6M5 10h4"/></svg>}
+                        {badge === 'Available' && <CheckCircle size={14} weight="fill" />}
+                        {badge === 'Verified' && <SealCheck size={14} weight="fill" />}
+                        {badge === 'Realtor' && <Building size={14} weight="fill" />}
                         {badge}
                       </span>
                     ))}
                   </div>
                   <div className="map-card-meta">
                     <span>
-                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="1" y="5" width="14" height="9" rx="1"/><path d="M5 5V4a3 3 0 016 0v1"/></svg>
+                      <Bed size={16} weight="regular" />
                       {prop.rooms} {prop.rooms === 1 ? 'room' : 'rooms'}
                     </span>
                     <span>
-                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M8 2v5M8 14v-3M2 8h3M14 8h-3"/></svg>
+                      <Stack size={16} weight="regular" />
                       {prop.floor}
                     </span>
                     <span>
-                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/></svg>
+                      <BoundingBox size={16} weight="regular" />
                       {prop.area} m²
                     </span>
                   </div>
@@ -361,9 +344,7 @@ export default function MapView({ properties, onViewDetail }) {
       {/* Map container */}
       <div className="map-container" ref={mapRef}>
         <button className="map-list-toggle mobile-only" onClick={() => setListOpen(true)}>
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M3 5h14M3 10h14M3 15h14"/>
-          </svg>
+          <List size={20} weight="bold" />
           <span>{filteredProperties.length} Listings</span>
         </button>
       </div>
@@ -379,9 +360,7 @@ export default function MapView({ properties, onViewDetail }) {
               {activeProperty.rooms} {activeProperty.rooms === 1 ? 'room' : 'rooms'} · {activeProperty.area} m²
             </div>
           </div>
-          <svg className="floating-card-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M7 4l6 6-6 6"/>
-          </svg>
+          <CaretRight size={20} weight="bold" />
         </div>
       )}
     </div>

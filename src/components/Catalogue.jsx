@@ -1,4 +1,5 @@
 import PropertyCard from './PropertyCard';
+import { CaretDown } from '@phosphor-icons/react';
 
 export default function Catalogue({ properties, onViewDetail }) {
   return (
@@ -16,7 +17,7 @@ export default function Catalogue({ properties, onViewDetail }) {
                 <option>3 rooms</option>
                 <option>4+ rooms</option>
               </select>
-              <svg className="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              <CaretDown className="chevron" size={20} weight="regular" />
             </div>
             <div className="filter-divider"></div>
             <div className="search-field select-field">
@@ -27,7 +28,7 @@ export default function Catalogue({ properties, onViewDetail }) {
                 <option>6000–10000 MAD</option>
                 <option>10000+ MAD</option>
               </select>
-              <svg className="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              <CaretDown className="chevron" size={20} weight="regular" />
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import PropertyCard from './PropertyCard';
 
 export default function Listings({ properties, onViewDetail }) {
@@ -44,7 +45,7 @@ export default function Listings({ properties, onViewDetail }) {
               disabled={currentOffset === 0}
               aria-label="Previous"
             >
-              &#8592;
+              <ArrowLeft size={20} weight="bold" />
             </button>
             <button 
               className="arrow-btn" 
@@ -52,10 +53,11 @@ export default function Listings({ properties, onViewDetail }) {
               disabled={currentOffset >= maxOffset}
               aria-label="Next"
             >
-              &#8594;
+              <ArrowRight size={20} weight="bold" />
             </button>
           </div>
         </div>
+
 
         <div className="cards-track-wrap">
           <div 

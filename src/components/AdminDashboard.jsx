@@ -1,4 +1,8 @@
 import { useState, useMemo } from 'react';
+import { 
+  Gear, Plus, House, CurrencyCircleDollar, BoundingBox, CheckCircle, 
+  MagnifyingGlass, PencilLine, Trash, WarningCircle, X, Check, SmileySad 
+} from '@phosphor-icons/react';
 
 const AVAILABLE_AMENITIES = [
   'Air Conditioning', 'Balcony', 'Concierge', 'Dishwasher', 'Elevator',
@@ -152,18 +156,13 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
         <div className="admin-header">
           <div className="admin-header-left">
             <h1 className="admin-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M10 13a3 3 0 100-6 3 3 0 000 6z"/>
-                <path d="M17.4 11c.1-.3.1-.7.1-1s0-.7-.1-1l2.1-1.6a.5.5 0 00.1-.6l-2-3.5a.5.5 0 00-.6-.2l-2.5 1a7.5 7.5 0 00-1.7-1L12.3.6a.5.5 0 00-.5-.4h-4a.5.5 0 00-.5.4l-.4 2.7c-.6.3-1.2.6-1.7 1l-2.5-1a.5.5 0 00-.6.2l-2 3.5a.5.5 0 00.1.6L2.3 9c-.1.3-.1.7-.1 1s0 .7.1 1L.2 12.6a.5.5 0 00-.1.6l2 3.5c.1.2.4.3.6.2l2.5-1c.5.4 1.1.7 1.7 1l.4 2.7c0 .2.2.4.5.4h4c.2 0 .4-.2.5-.4l.4-2.7c.6-.3 1.2-.6 1.7-1l2.5 1c.2.1.5 0 .6-.2l2-3.5a.5.5 0 00-.1-.6L17.4 11z"/>
-              </svg>
+              <Gear size={32} weight="duotone" />
               Admin Dashboard
             </h1>
             <p className="admin-subtitle">Manage your property listings</p>
           </div>
           <button className="admin-add-btn" onClick={handleOpenAdd}>
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M10 4v12M4 10h12"/>
-            </svg>
+            <Plus size={18} weight="bold" />
             Add Property
           </button>
         </div>
@@ -172,9 +171,7 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
         <div className="admin-stats">
           <div className="admin-stat-card">
             <div className="stat-card-icon stat-icon-blue">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M3 12l9-8 9 8"/><path d="M5 10v10h14V10"/>
-              </svg>
+              <House size={24} weight="regular" />
             </div>
             <div className="stat-card-info">
               <span className="stat-card-value">{stats.total}</span>
@@ -183,9 +180,7 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
           </div>
           <div className="admin-stat-card">
             <div className="stat-card-icon stat-icon-green">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
-              </svg>
+              <CurrencyCircleDollar size={24} weight="regular" />
             </div>
             <div className="stat-card-info">
               <span className="stat-card-value">{stats.avgPrice} MAD</span>
@@ -194,9 +189,7 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
           </div>
           <div className="admin-stat-card">
             <div className="stat-card-icon stat-icon-orange">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>
-              </svg>
+              <BoundingBox size={24} weight="regular" />
             </div>
             <div className="stat-card-info">
               <span className="stat-card-value">{stats.totalArea} m²</span>
@@ -205,9 +198,7 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
           </div>
           <div className="admin-stat-card">
             <div className="stat-card-icon stat-icon-emerald">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12l5 5L20 7"/>
-              </svg>
+              <CheckCircle size={24} weight="fill" />
             </div>
             <div className="stat-card-info">
               <span className="stat-card-value">{stats.available}</span>
@@ -221,10 +212,7 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
           <div className="admin-table-header">
             <h2 className="admin-table-title">All Properties</h2>
             <div className="admin-search">
-              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <circle cx="9" cy="9" r="6"/>
-                <path d="M14 14l4 4"/>
-              </svg>
+              <MagnifyingGlass size={18} weight="regular" />
               <input
                 type="text"
                 placeholder="Search by address, type or price..."
@@ -276,14 +264,10 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
                     <td>
                       <div className="admin-actions">
                         <button className="admin-action-btn admin-edit-btn" onClick={() => handleOpenEdit(property)} title="Edit">
-                          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <path d="M13.586 3.586a2 2 0 012.828 2.828l-8.793 8.793-3.828.707.707-3.828 8.793-8.793z"/>
-                          </svg>
+                          <PencilLine size={18} weight="regular" />
                         </button>
                         <button className="admin-action-btn admin-delete-btn" onClick={() => setDeleteConfirm(property.id)} title="Delete">
-                          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <path d="M4 5h12M7 5V4a2 2 0 012-2h2a2 2 0 012 2v1M8 9v5M12 9v5M5 5l1 11a2 2 0 002 2h4a2 2 0 002-2l1-11"/>
-                          </svg>
+                          <Trash size={18} weight="regular" />
                         </button>
                       </div>
                     </td>
@@ -292,12 +276,7 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
                 {filtered.length === 0 && (
                   <tr>
                     <td colSpan="7" className="admin-empty">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M8 15s1.5 2 4 2 4-2 4-2"/>
-                        <line x1="9" y1="9" x2="9.01" y2="9"/>
-                        <line x1="15" y1="9" x2="15.01" y2="9"/>
-                      </svg>
+                      <SmileySad size={48} weight="regular" />
                       <span>No properties found</span>
                     </td>
                   </tr>
@@ -314,10 +293,7 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
           <div className="modal-overlay" onClick={() => setDeleteConfirm(null)}></div>
           <div className="admin-confirm-modal">
             <div className="confirm-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 8v4M12 16h.01"/>
-              </svg>
+              <WarningCircle size={48} weight="fill" color="#E53E3E" />
             </div>
             <h3>Delete Property</h3>
             <p>Are you sure you want to remove this property? This action cannot be undone.</p>
@@ -337,7 +313,7 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
             <div className="modal-header">
               <h3>{editingId ? 'Edit Property' : 'Add New Property'}</h3>
               <button className="modal-close" onClick={handleCloseForm}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                <X size={20} weight="bold" />
               </button>
             </div>
 
@@ -410,7 +386,7 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
                           <img src={img} alt={img} />
                           {formData.image === img && (
                             <div className="admin-image-check">
-                              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 8l4 4 6-6"/></svg>
+                              <Check size={12} weight="bold" />
                             </div>
                           )}
                         </button>
@@ -471,7 +447,7 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
                         onClick={() => handleToggleBadge(badge)}
                       >
                         {formData.badges.includes(badge) && (
-                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 8l4 4 6-6"/></svg>
+                          <Check size={12} weight="bold" />
                         )}
                         {badge}
                       </button>
@@ -491,7 +467,7 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
                         onClick={() => handleToggleAmenity(amenity)}
                       >
                         {formData.amenities.includes(amenity) && (
-                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 8l4 4 6-6"/></svg>
+                          <Check size={12} weight="bold" />
                         )}
                         {amenity}
                       </button>
@@ -514,12 +490,7 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
       {/* Toast notification */}
       {toast && (
         <div className={`admin-toast ${toast.type}`}>
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
-            {toast.type === 'delete'
-              ? <><circle cx="10" cy="10" r="8"/><path d="M7 10l2 2 4-4"/></>
-              : <><circle cx="10" cy="10" r="8"/><path d="M7 10l2 2 4-4"/></>
-            }
-          </svg>
+          <CheckCircle size={20} weight="fill" />
           {toast.message}
         </div>
       )}
