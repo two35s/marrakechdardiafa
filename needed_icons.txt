@@ -1,0 +1,72 @@
+LIST OF ICONS NEEDED FOR MARRAKECH DAR DIAFA WEBSITE
+===================================================
+
+GENERAL NAVIGATION & UI
+-----------------------
+- Logo Icon: A modern house or abstract circular architectural shape.
+- Home: A simple house icon.
+- Catalogue: A grid or dashboard layout icon.
+- Map: A location pin or map marker icon.
+- Admin: A settings gear or user-shield icon.
+- Search: A magnifying glass icon.
+- Filters: An adjustments or horizontal sliders icon.
+- Chevron Down/Up: Small arrows for dropdowns and accordions.
+- Arrow Left/Right: Navigation arrows for the image gallery.
+- Back Arrow: A return arrow for navigating to previous pages.
+- Heart (Outline & Filled): For "Like" and "Saved" properties.
+- Share: A three-dot or arrow-out icon for sharing listings.
+- Plus: An "Add New" icon for the Admin Dashboard.
+- Edit/Pencil: To modify existing listings.
+- Trash/Delete: To remove listings from the database.
+- Close/X: To dismiss modals and mobile menus.
+
+PROPERTY FEATURES (AMENITIES)
+----------------------------
+- Rooms/Bedroom: A bed or layout icon.
+- Area/Size: A ruler, square meter (m2) symbol, or grid icon.
+- Floor: A stacked layers or stairs icon.
+- Price: A currency tag or simple clock icon (as currently used).
+- Wi-Fi: Standard wireless signal bars.
+- Air Conditioning: A snowflake or fan icon.
+- Balcony: A balcony railing or outdoor view icon.
+- Dishwasher: A dish or appliance icon.
+- Elevator: Up/Down arrows inside a box.
+- Furnished: A sofa or armchair icon.
+- Parking: A "P" inside a square or a car icon.
+- Washing Machine: A laundry or tumble dryer icon.
+- Heating: A radiator or flame icon.
+- Terrace: A sun or parasol icon.
+- Smart Home: A house with a circuit or lightning bolt.
+- Concierge: A service bell or person icon.
+- Gym: A dumbbell or weight icon.
+- Swimming Pool: Water waves or a pool icon.
+
+SOCIAL MEDIA & EXTERNAL
+-----------------------
+- Instagram: Standard app camera logo.
+- Facebook: Simple "f" logo.
+- Twitter/X: Simple X or bird icon.
+- WhatsApp: Bubble with phone handset.
+- Email: Envelope or "at" (@) symbol.
+- Phone: Handset or mobile phone icon.
+
+MOBILE SPECIFIC
+---------------
+- Menu (Hamburger): Three horizontal lines.
+- Close (X): To exit the mobile menu.
+- Plus (Menu Toggle): A thin plus (+) sign that rotates to an X.
+
+
+STATUS BADGES
+-------------
+- Available: A green checkmark or "tick" icon.
+- Verified: A star or badge with a tick.
+- Realtor/Premium: A building or house-shield icon.
+- New Listing: A "New" spark or bolt icon.
+- Featured: A crown or trophy icon.
+
+MAP SPECIFIC
+-----------
+- Map Marker: A custom pin with a price or house icon.
+- List Toggle: A list-bullet icon.
+- Layout Toggle: A grid/window icon.
