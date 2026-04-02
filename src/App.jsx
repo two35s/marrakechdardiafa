@@ -30,7 +30,13 @@ function App() {
   }, []);
 
   const [activePage, setActivePage] = useState(() => {
-    const path = window.location.pathname.toLowerCase();
+    let path = window.location.pathname.toLowerCase();
+    // GitHub Pages repo prefix handling
+    const repoPrefix = '/marrakechdardiafa';
+    if (path.startsWith(repoPrefix)) {
+      path = path.slice(repoPrefix.length) || '/';
+    }
+    
     const propertyMatch = path.match(/^\/property\/([a-zA-Z0-9-]+)$/);
     if (propertyMatch) return 'PropertyDetail';
     if (path === '/catalogue' || path === '/catalog') return 'Catalogue';
@@ -39,7 +45,11 @@ function App() {
     return 'Home';
   });
   const [selectedPropertyId, setSelectedPropertyId] = useState(() => {
-    const path = window.location.pathname.toLowerCase();
+    let path = window.location.pathname.toLowerCase();
+    const repoPrefix = '/marrakechdardiafa';
+    if (path.startsWith(repoPrefix)) {
+      path = path.slice(repoPrefix.length) || '/';
+    }
     const match = path.match(/^\/property\/([a-zA-Z0-9-]+)$/);
     return match ? match[1] : null;
   });
@@ -48,7 +58,12 @@ function App() {
   
   useEffect(() => {
     const handlePopState = () => {
-      const path = window.location.pathname.toLowerCase();
+      let path = window.location.pathname.toLowerCase();
+      const repoPrefix = '/marrakechdardiafa';
+      if (path.startsWith(repoPrefix)) {
+        path = path.slice(repoPrefix.length) || '/';
+      }
+
       const propertyMatch = path.match(/^\/property\/([a-zA-Z0-9-]+)$/);
       if (propertyMatch) {
         setSelectedPropertyId(propertyMatch[1]);
@@ -74,15 +89,18 @@ function App() {
   const handleNavigate = (page) => {
     setActivePage(page);
     setSelectedPropertyId(null);
+    const repoPrefix = '/marrakechdardiafa';
     const paths = { Catalogue: '/catalogue', Map: '/map', Admin: '/admin', Home: '/' };
-    window.history.pushState({}, '', paths[page] || '/');
+    const targetPath = paths[page] || '/';
+    window.history.pushState({}, '', repoPrefix + targetPath);
     window.scrollTo(0, 0);
   };
 
   const handleViewDetail = (propertyId) => {
     setSelectedPropertyId(propertyId);
     setActivePage('PropertyDetail');
-    window.history.pushState({}, '', `/property/${propertyId}`);
+    const repoPrefix = '/marrakechdardiafa';
+    window.history.pushState({}, '', `${repoPrefix}/property/${propertyId}`);
     window.scrollTo(0, 0);
   };
 
