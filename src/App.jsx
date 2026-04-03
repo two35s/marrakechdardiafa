@@ -221,8 +221,8 @@ function App() {
           menuButtonColor={scrolled ? '#111' : '#111'}
           openMenuButtonColor="#111"
           changeMenuColorOnOpen={false}
-          colors={['#dc9d75', '#e85d04']}
-          accentColor="#e85d04"
+          colors={['#c46b2e', '#a05520']}
+          accentColor="#c46b2e"
           displaySocials={true}
           displayItemNumbering={true}
           items={[
