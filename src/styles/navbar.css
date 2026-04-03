@@ -23,22 +23,25 @@
 .nav-logo {
   display: flex;
   align-items: center;
+  gap: 8px;
   text-decoration: none;
   color: var(--ink);
   white-space: nowrap;
 }
 
-.nav-logo-text {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  line-height: 1;
-  text-transform: lowercase;
+.nav-logo-svg {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
 }
 
-.nav-logo-accent {
-  color: var(--accent);
-  font-weight: 600;
+.nav-logo-text {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  line-height: 1;
+  text-transform: lowercase;
+  color: var(--ink);
 }
 
 .nav-left { display: flex; align-items: center; gap: 16px; }
