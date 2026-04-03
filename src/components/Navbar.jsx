@@ -5,7 +5,7 @@ export default function Navbar({ scrolled, activePage, onNavigate }) {
     <header className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar">
       <div className="nav-inner">
         <div className="nav-left">
-          <a className="nav-logo" href="#">
+          <a className="nav-logo" href="#" onClick={(e) => { e.preventDefault(); onNavigate('Home'); }} role="button" aria-label="Go to home">
             <House size={24} weight="duotone" color="#4A90D9" className="logo-icon" />
             <span>marrakechdardiafa</span>
           </a>
@@ -14,7 +14,6 @@ export default function Navbar({ scrolled, activePage, onNavigate }) {
 
         {/* Desktop Nav */}
         <nav className="nav-links desktop-only">
-          <a className={`nav-link ${activePage === 'Home' ? 'active' : ''}`} href="#" onClick={(e) => { e.preventDefault(); onNavigate('Home'); }} role="button"><House size={20} weight={activePage === 'Home' ? 'fill' : 'regular'} />Home</a>
           <a className={`nav-link ${activePage === 'Catalogue' ? 'active' : ''}`} href="#" onClick={(e) => { e.preventDefault(); onNavigate('Catalogue'); }} role="button"><SquaresFour size={20} weight={activePage === 'Catalogue' ? 'fill' : 'regular'} />Catalogue</a>
           <a className={`nav-link ${activePage === 'Map' ? 'active' : ''}`} href="#" onClick={(e) => { e.preventDefault(); onNavigate('Map'); }} role="button"><MapPin size={20} weight={activePage === 'Map' ? 'fill' : 'regular'} />Map</a>
           <a className={`nav-link ${activePage === 'Admin' ? 'active' : ''}`} href="#" onClick={(e) => { e.preventDefault(); onNavigate('Admin'); }} role="button"><Gear size={20} weight={activePage === 'Admin' ? 'fill' : 'regular'} />Admin</a>
