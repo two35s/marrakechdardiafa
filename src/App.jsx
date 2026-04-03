@@ -31,6 +31,7 @@ function App() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchFilters, setSearchFilters] = useState(null);
 
   const [activePage, setActivePage] = useState(() => parsePath().page);
   const [selectedPropertyId, setSelectedPropertyId] = useState(() => parsePath().id);

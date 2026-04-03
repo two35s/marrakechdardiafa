@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { CaretLeft, CaretRight } from '@phosphor-icons/react';
+import { MagnifyingGlass, Bed, CurrencyCircleDollar, CaretDown, CaretLeft, CaretRight } from '@phosphor-icons/react';
 
 const heroSlides = [
   {
@@ -20,7 +20,10 @@ const heroSlides = [
   }
 ];
 
-export default function Hero() {
+export default function Hero({ onSearch }) {
+  const [district, setDistrict] = useState('');
+  const [rooms, setRooms] = useState('');
+  const [price, setPrice] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const nextSlide = useCallback(() => {
@@ -35,6 +38,14 @@ export default function Hero() {
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
   }, [nextSlide]);
+
+  const handleSearch = () => {
+    if (onSearch) onSearch({ district: district || null, rooms: rooms || null, price: price || null });
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') handleSearch();
+  };
 
   return (
     <section className="hero">
@@ -61,6 +72,47 @@ export default function Hero() {
               <CaretRight size={24} weight="bold" />
             </button>
           </div>
+        </div>
+
+        <div className="hero-search-bar">
+          <div className="search-field">
+            <MagnifyingGlass className="field-icon" size={20} weight="regular" />
+            <input
+              type="text"
+              placeholder="District, Area"
+              value={district}
+              onChange={e => setDistrict(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
+          <div className="search-divider"></div>
+          <div className="search-field select-field">
+            <Bed className="field-icon" size={20} weight="regular" />
+            <select value={rooms} onChange={e => setRooms(e.target.value)}>
+              <option value="">Rooms</option>
+              <option value="1">1 room</option>
+              <option value="2">2 rooms</option>
+              <option value="3">3 rooms</option>
+              <option value="4+">4+ rooms</option>
+            </select>
+            <CaretDown className="chevron" size={16} weight="regular" />
+          </div>
+          <div className="search-divider"></div>
+          <div className="search-field select-field">
+            <CurrencyCircleDollar className="field-icon" size={20} weight="regular" />
+            <select value={price} onChange={e => setPrice(e.target.value)}>
+              <option value="">Price</option>
+              <option value="0-3000">0–3000 MAD</option>
+              <option value="3000-6000">3000–6000 MAD</option>
+              <option value="6000-10000">6000–10000 MAD</option>
+              <option value="10000-99999">10000+ MAD</option>
+            </select>
+            <CaretDown className="chevron" size={16} weight="regular" />
+          </div>
+          <button className="hero-search-btn" onClick={handleSearch}>
+            <MagnifyingGlass size={18} weight="bold" />
+            Search
+          </button>
         </div>
       </div>
     </section>
