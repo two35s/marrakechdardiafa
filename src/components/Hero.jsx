@@ -19,7 +19,7 @@ export default function Hero({ onSearch }) {
       <div className="hero-inner">
         <h1 className="hero-title">Find your perfect place</h1>
         <div className="hero-image-wrap">
-          <img src="/apartment_hero.png" alt="Luxury Marrakech villa" className="hero-img" />
+          <img src="https://images.unsplash.com/photo-1597212618440-806262de4f6b?w=1200&q=80" alt="Luxury Marrakech riad with Atlas Mountains" className="hero-img" />
 
           <div className="search-bar desktop-only">
             <div className="search-field">
