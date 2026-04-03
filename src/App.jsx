@@ -11,7 +11,7 @@ const StaggeredMenu = lazy(() => import('./components/StaggeredMenu'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 
 const REPO_PREFIX = '/marrakechdardiafa';
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '';
 
 function parsePath() {
   let path = window.location.pathname.toLowerCase();

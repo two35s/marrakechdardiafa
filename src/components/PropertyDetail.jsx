@@ -12,6 +12,7 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
   const [contactSent, setContactSent] = useState(false);
 
   const property = properties.find(p => p.id === propertyId);
+  const gallery = property?.gallery?.length ? property.gallery : [property?.image || ''];
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -67,14 +68,14 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
         <div className="detail-gallery">
           <div className="gallery-main">
             <img
-              src={property.gallery[activeImage]}
+              src={gallery[activeImage]}
               alt={`${property.address} — ${property.details.type}, ${property.rooms} rooms`}
               className="gallery-main-img"
             />
             <div className="gallery-nav">
               <button
                 className="gallery-arrow gallery-arrow-left"
-                onClick={() => setActiveImage(i => (i - 1 + property.gallery.length) % property.gallery.length)}
+                onClick={() => setActiveImage(i => (i - 1 + gallery.length) % gallery.length)}
                 aria-label="Previous image"
                 type="button"
               >
@@ -82,17 +83,17 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
               </button>
               <button
                 className="gallery-arrow gallery-arrow-right"
-                onClick={() => setActiveImage(i => (i + 1) % property.gallery.length)}
+                onClick={() => setActiveImage(i => (i + 1) % gallery.length)}
                 aria-label="Next image"
                 type="button"
               >
                 <CaretRight size={24} weight="bold" />
               </button>
             </div>
-            <div className="gallery-counter">{activeImage + 1} / {property.gallery.length}</div>
+            <div className="gallery-counter">{activeImage + 1} / {gallery.length}</div>
           </div>
           <div className="gallery-thumbs">
-            {property.gallery.map((img, i) => (
+            {gallery.map((img, i) => (
               <button
                 key={i}
                 type="button"

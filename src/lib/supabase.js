@@ -14,11 +14,11 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // Utility to convert a Supabase property record into the structure the UI expects
 export const mapSupabaseToProperty = (sp) => {
   return {
-    id: sp.id, // we might need to map to string, but keep as UUID
+    id: sp.id,
     image: sp.image_url,
-    gallery: sp.ui_details?.gallery || [],
+    gallery: sp.ui_details?.gallery?.length ? sp.ui_details.gallery : [sp.image_url],
     price: Number(sp.price),
-    address: `${sp.neighborhood}, ${sp.city}`, // fallback address format
+    address: `${sp.neighborhood}, ${sp.city}`,
     badges: sp.badges || [],
     rooms: sp.rooms,
     floor: sp.floor_description,
@@ -39,14 +39,15 @@ export const mapSupabaseToProperty = (sp) => {
 };
 
 export const mapPropertyToSupabase = (p) => {
+  const parts = p.address?.split(',').map(s => s.trim()) || ['', ''];
   return {
-    title: p.address, // UI uses address as title loosely
+    title: p.address || '',
     slug: p.slug || Math.random().toString(36).substring(7),
     category: p.details?.type?.toLowerCase() === 'riad' ? 'riad' : 
               p.details?.type?.toLowerCase() === 'villa' ? 'villa' : 'apartment',
     type: 'rent',
-    neighborhood: p.address?.split(',')[1]?.trim() || '',
-    city: p.address?.split(',')[0]?.trim() || 'Marrakech',
+    neighborhood: parts[0] || '',
+    city: parts[1] || 'Marrakech',
     price: p.price,
     price_unit: 'MAD',
     rooms: p.rooms,

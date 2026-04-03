@@ -136,7 +136,23 @@ export default function MapView({ properties, onViewDetail }) {
 
     mapInstanceRef.current = map;
 
-    properties.forEach((prop) => {
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+      markersRef.current = [];
+    };
+  }, []);
+
+  // Update markers when filtered properties change
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+
+    // Remove old markers
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
+
+    // Add markers for filtered properties
+    filteredProperties.forEach((prop) => {
       const marker = L.marker([prop.lat, prop.lng], {
         icon: createMarkerIcon(prop.price, false),
       }).addTo(map);
@@ -150,18 +166,7 @@ export default function MapView({ properties, onViewDetail }) {
 
       markersRef.current.push(marker);
     });
-
-    map.on('click', () => {
-      setActiveProperty(null);
-      updateMarkers(null);
-    });
-
-    return () => {
-      map.remove();
-      mapInstanceRef.current = null;
-      markersRef.current = [];
-    };
-  }, []);
+  }, [filteredProperties]);
 
   const updateMarkers = (activeId) => {
     markersRef.current.forEach((marker) => {
@@ -343,7 +348,7 @@ export default function MapView({ properties, onViewDetail }) {
 
       {/* Map container */}
       <div className="map-container" ref={mapRef}>
-        <button className="map-list-toggle mobile-only" onClick={() => setListOpen(true)}>
+        <button type="button" className="map-list-toggle mobile-only" onClick={() => setListOpen(true)}>
           <List size={20} weight="bold" />
           <span>{filteredProperties.length} Listings</span>
         </button>
