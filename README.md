@@ -1,6 +1,6 @@
 # marrakechdardiafa — Infinity Rent
 
-A modern single-page application for browsing and managing rental properties in Marrakech, Morocco. Built with React 18, Vite, and Supabase.
+A modern single page application for browsing and managing rental properties in Marrakech, Morocco. Built with React 18, Vite, and Supabase.
 
 **Live Demo:** [https://two35s.github.io/marrakechdardiafa/](https://two35s.github.io/marrakechdardiafa/)
 
