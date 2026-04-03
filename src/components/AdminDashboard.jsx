@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
-import { 
+  import { 
   Gear, Plus, House, CurrencyCircleDollar, BoundingBox, CheckCircle, 
-  MagnifyingGlass, PencilLine, Trash, WarningCircle, X, Check, SmileySad 
+  MagnifyingGlass, PencilLine, Trash, WarningCircle, X, Check, SmileySad, SignOut 
 } from '@phosphor-icons/react';
 
 const AVAILABLE_AMENITIES = [
@@ -39,7 +39,7 @@ const emptyProperty = {
   }
 };
 
-export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }) {
+export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete, onLogout }) {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({ ...emptyProperty });
@@ -119,16 +119,31 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const price = Number(formData.price);
+    const rooms = Number(formData.rooms);
+    const area = Number(formData.area);
+    const lat = Number(formData.lat);
+    const lng = Number(formData.lng);
+    const yearBuilt = formData.details.yearBuilt ? Number(formData.details.yearBuilt) : null;
+
+    if (price < 0) { alert('Price cannot be negative.'); return; }
+    if (rooms < 1) { alert('At least 1 room is required.'); return; }
+    if (area < 1) { alert('Area must be at least 1 m².'); return; }
+    if (lat && (lat < -90 || lat > 90)) { alert('Latitude must be between -90 and 90.'); return; }
+    if (lng && (lng < -180 || lng > 180)) { alert('Longitude must be between -180 and 180.'); return; }
+    if (yearBuilt && (yearBuilt < 1800 || yearBuilt > new Date().getFullYear() + 1)) { alert('Invalid year built.'); return; }
+
     const data = {
       ...formData,
-      price: Number(formData.price),
-      rooms: Number(formData.rooms),
-      area: Number(formData.area),
-      lat: Number(formData.lat),
-      lng: Number(formData.lng),
+      price,
+      rooms,
+      area,
+      lat,
+      lng,
       details: {
         ...formData.details,
-        yearBuilt: Number(formData.details.yearBuilt),
+        yearBuilt,
       }
     };
 
@@ -161,10 +176,18 @@ export default function AdminDashboard({ properties, onAdd, onUpdate, onDelete }
             </h1>
             <p className="admin-subtitle">Manage your property listings</p>
           </div>
-          <button className="admin-add-btn" onClick={handleOpenAdd}>
-            <Plus size={18} weight="bold" />
-            Add Property
-          </button>
+          <div className="admin-header-right" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            {onLogout && (
+              <button className="admin-logout-btn" onClick={onLogout} title="Sign out">
+                <SignOut size={18} weight="regular" />
+                Sign Out
+              </button>
+            )}
+            <button className="admin-add-btn" onClick={handleOpenAdd}>
+              <Plus size={18} weight="bold" />
+              Add Property
+            </button>
+          </div>
         </div>
 
         {/* Stats */}

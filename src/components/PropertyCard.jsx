@@ -2,16 +2,43 @@ import { useState } from 'react';
 import { CaretLeft, CaretRight, Heart, MapPin, CheckCircle, SealCheck, Building, Bed, Stack, BoundingBox } from '@phosphor-icons/react';
 
 export default function PropertyCard({ property, onViewDetail }) {
-  const [liked, setLiked] = useState(false);
   const [activeDot, setActiveDot] = useState(0);
 
   const gallery = property.gallery && property.gallery.length > 0 ? property.gallery : [property.image];
   const dots = gallery.map((_, i) => i);
 
+  const isLiked = (() => {
+    try {
+      const stored = localStorage.getItem('liked_properties');
+      return stored ? JSON.parse(stored).includes(property.id) : false;
+    } catch {
+      return false;
+    }
+  })();
+
+  const [liked, setLiked] = useState(isLiked);
+
   const handleCardClick = (e) => {
-    // Don't navigate if user clicked an interactive element
     if (e.target.closest('.like-btn') || e.target.closest('.tour-btn') || e.target.closest('.card-dot') || e.target.closest('.card-nav-arrow')) return;
     if (onViewDetail) onViewDetail(property.id);
+  };
+
+  const toggleLike = () => {
+    setLiked(prev => {
+      const next = !prev;
+      try {
+        const stored = localStorage.getItem('liked_properties');
+        const likedIds = stored ? JSON.parse(stored) : [];
+        if (next) {
+          if (!likedIds.includes(property.id)) likedIds.push(property.id);
+        } else {
+          const idx = likedIds.indexOf(property.id);
+          if (idx > -1) likedIds.splice(idx, 1);
+        }
+        localStorage.setItem('liked_properties', JSON.stringify(likedIds));
+      } catch { /* storage unavailable */ }
+      return next;
+    });
   };
 
   return (
@@ -19,6 +46,7 @@ export default function PropertyCard({ property, onViewDetail }) {
       <div className="card-img-wrap">
         <img src={gallery[activeDot]} alt={property.address} className="card-img" />
         <button 
+          type="button"
           className="card-nav-arrow arrow-left"
           onClick={(e) => { e.stopPropagation(); setActiveDot(i => i === 0 ? gallery.length - 1 : i - 1); }}
           aria-label="Previous image"
@@ -26,6 +54,7 @@ export default function PropertyCard({ property, onViewDetail }) {
           <CaretLeft size={20} weight="bold" />
         </button>
         <button 
+          type="button"
           className="card-nav-arrow arrow-right"
           onClick={(e) => { e.stopPropagation(); setActiveDot(i => (i + 1) % gallery.length); }}
           aria-label="Next image"
@@ -36,8 +65,11 @@ export default function PropertyCard({ property, onViewDetail }) {
           {dots.map((dotIndex) => (
             <span 
               key={dotIndex} 
+              role="button"
+              tabIndex={0}
               className={`card-dot ${activeDot === dotIndex ? 'active' : ''}`}
               onClick={() => setActiveDot(dotIndex)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveDot(dotIndex); }}
             ></span>
           ))}
         </div>
@@ -50,9 +82,10 @@ export default function PropertyCard({ property, onViewDetail }) {
             <span className="price-unit">month</span>
           </div>
           <button 
+            type="button"
             className={`like-btn ${liked ? 'liked' : ''}`} 
             aria-label={liked ? "Unlike" : "Like"}
-            onClick={() => setLiked(!liked)}
+            onClick={toggleLike}
           >
             <Heart size={22} weight={liked ? "fill" : "regular"} />
           </button>
@@ -99,7 +132,7 @@ export default function PropertyCard({ property, onViewDetail }) {
           </span>
         </div>
         
-        <button className="tour-btn" onClick={() => onViewDetail && onViewDetail(property.id)}>Request a tour</button>
+        <button type="button" className="tour-btn" onClick={() => onViewDetail && onViewDetail(property.id)}>Request a tour</button>
       </div>
     </article>
   );

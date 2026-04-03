@@ -9,103 +9,113 @@ import StaggeredMenu from './components/StaggeredMenu';
 import AdminDashboard from './components/AdminDashboard';
 import { supabase, mapSupabaseToProperty, mapPropertyToSupabase } from './lib/supabase';
 
+const REPO_PREFIX = '/marrakechdardiafa';
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+
+function parsePath() {
+  let path = window.location.pathname.toLowerCase();
+  if (path.startsWith(REPO_PREFIX)) {
+    path = path.slice(REPO_PREFIX.length) || '/';
+  }
+  const propertyMatch = path.match(/^\/property\/([a-zA-Z0-9-]+)$/);
+  if (propertyMatch) return { page: 'PropertyDetail', id: propertyMatch[1] };
+  if (path === '/catalogue' || path === '/catalog') return { page: 'Catalogue', id: null };
+  if (path === '/map') return { page: 'Map', id: null };
+  if (path === '/admin') return { page: 'Admin', id: null };
+  return { page: 'Home', id: null };
+}
+
 function App() {
   const [scrolled, setScrolled] = useState(false);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchFilters, setSearchFilters] = useState(null);
 
-  // Fetch properties from Supabase on load
+  const [activePage, setActivePage] = useState(() => parsePath().page);
+  const [selectedPropertyId, setSelectedPropertyId] = useState(() => parsePath().id);
+
+  // Admin authentication state
+  const [adminAuthenticated, setAdminAuthenticated] = useState(() => {
+    return sessionStorage.getItem('admin_auth') === 'true';
+  });
+  const [adminPasswordInput, setAdminPasswordInput] = useState('');
+  const [adminPasswordError, setAdminPasswordError] = useState(false);
+
   useEffect(() => {
     const fetchProperties = async () => {
       setLoading(true);
-      const { data, error } = await supabase.from('properties').select('*');
-      if (error) {
-        console.error('Error fetching properties:', error);
-      } else if (data) {
-        setProperties(data.map(mapSupabaseToProperty));
+      setError(null);
+      try {
+        const { data, error } = await supabase.from('properties').select('*');
+        if (error) {
+          console.error('Error fetching properties:', error);
+          setError('Failed to load properties. Please try again later.');
+        } else if (data) {
+          setProperties(data.map(mapSupabaseToProperty));
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        setError('An unexpected error occurred.');
       }
       setLoading(false);
     };
     fetchProperties();
   }, []);
 
-  const [activePage, setActivePage] = useState(() => {
-    let path = window.location.pathname.toLowerCase();
-    // GitHub Pages repo prefix handling
-    const repoPrefix = '/marrakechdardiafa';
-    if (path.startsWith(repoPrefix)) {
-      path = path.slice(repoPrefix.length) || '/';
-    }
-    
-    const propertyMatch = path.match(/^\/property\/([a-zA-Z0-9-]+)$/);
-    if (propertyMatch) return 'PropertyDetail';
-    if (path === '/catalogue' || path === '/catalog') return 'Catalogue';
-    if (path === '/map') return 'Map';
-    if (path === '/admin') return 'Admin';
-    return 'Home';
-  });
-  const [selectedPropertyId, setSelectedPropertyId] = useState(() => {
-    let path = window.location.pathname.toLowerCase();
-    const repoPrefix = '/marrakechdardiafa';
-    if (path.startsWith(repoPrefix)) {
-      path = path.slice(repoPrefix.length) || '/';
-    }
-    const match = path.match(/^\/property\/([a-zA-Z0-9-]+)$/);
-    return match ? match[1] : null;
-  });
-
-  // Removing localStorage persistence useEffect.
-  
   useEffect(() => {
     const handlePopState = () => {
-      let path = window.location.pathname.toLowerCase();
-      const repoPrefix = '/marrakechdardiafa';
-      if (path.startsWith(repoPrefix)) {
-        path = path.slice(repoPrefix.length) || '/';
-      }
-
-      const propertyMatch = path.match(/^\/property\/([a-zA-Z0-9-]+)$/);
-      if (propertyMatch) {
-        setSelectedPropertyId(propertyMatch[1]);
-        setActivePage('PropertyDetail');
-      } else if (path === '/catalogue' || path === '/catalog') {
-        setActivePage('Catalogue');
-        setSelectedPropertyId(null);
-      } else if (path === '/map') {
-        setActivePage('Map');
-        setSelectedPropertyId(null);
-      } else if (path === '/admin') {
-        setActivePage('Admin');
-        setSelectedPropertyId(null);
-      } else {
-        setActivePage('Home');
-        setSelectedPropertyId(null);
-      }
+      const parsed = parsePath();
+      setSelectedPropertyId(parsed.id);
+      setActivePage(parsed.page);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const handleNavigate = (page) => {
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 8);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navigateTo = (page) => {
     setActivePage(page);
     setSelectedPropertyId(null);
-    const repoPrefix = '/marrakechdardiafa';
     const paths = { Catalogue: '/catalogue', Map: '/map', Admin: '/admin', Home: '/' };
     const targetPath = paths[page] || '/';
-    window.history.pushState({}, '', repoPrefix + targetPath);
+    window.history.pushState({}, '', REPO_PREFIX + targetPath);
     window.scrollTo(0, 0);
   };
 
-  const handleViewDetail = (propertyId) => {
+  const viewDetail = (propertyId) => {
     setSelectedPropertyId(propertyId);
     setActivePage('PropertyDetail');
-    const repoPrefix = '/marrakechdardiafa';
-    window.history.pushState({}, '', `${repoPrefix}/property/${propertyId}`);
+    window.history.pushState({}, '', `${REPO_PREFIX}/property/${propertyId}`);
     window.scrollTo(0, 0);
   };
 
-  const handleBackFromDetail = () => {
+  const goBack = () => {
     window.history.back();
+  };
+
+  const handleAdminLogin = (e) => {
+    e.preventDefault();
+    if (adminPasswordInput === ADMIN_PASSWORD) {
+      setAdminAuthenticated(true);
+      sessionStorage.setItem('admin_auth', 'true');
+      setAdminPasswordError(false);
+    } else {
+      setAdminPasswordError(true);
+    }
+  };
+
+  const handleAdminLogout = () => {
+    setAdminAuthenticated(false);
+    sessionStorage.removeItem('admin_auth');
+    navigateTo('Home');
   };
 
   // CRUD handlers
@@ -127,7 +137,6 @@ function App() {
       .update(supabasePayload)
       .eq('id', updatedProperty.id)
       .select();
-      
     if (error) {
       console.error('Error updating property:', error);
       alert('Failed to update property.');
@@ -147,13 +156,59 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 8);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const handleSearch = (filters) => {
+    setSearchFilters(filters);
+    navigateTo('Catalogue');
+  };
+
+  // Filtered properties for Catalogue
+  const filteredProperties = (() => {
+    if (!searchFilters) return properties;
+    let result = [...properties];
+    if (searchFilters.district) {
+      const q = searchFilters.district.toLowerCase();
+      result = result.filter(p => p.address?.toLowerCase().includes(q));
+    }
+    if (searchFilters.rooms && searchFilters.rooms !== 'Rooms') {
+      if (searchFilters.rooms === '4+') {
+        result = result.filter(p => p.rooms >= 4);
+      } else {
+        result = result.filter(p => p.rooms === Number(searchFilters.rooms));
+      }
+    }
+    if (searchFilters.price && searchFilters.price !== 'Price') {
+      const [min, max] = searchFilters.price.split('-').map(Number);
+      result = result.filter(p => {
+        if (max) return p.price >= min && p.price <= max;
+        return p.price >= min;
+      });
+    }
+    return result;
+  })();
+
+  if (loading) {
+    return (
+      <>
+        <Navbar scrolled={false} activePage={activePage} onNavigate={navigateTo} />
+        <div className="loading-screen">
+          <div className="loading-spinner"></div>
+          <p>Loading properties…</p>
+        </div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Navbar scrolled={false} activePage={activePage} onNavigate={navigateTo} />
+        <div className="loading-screen">
+          <p className="error-message">{error}</p>
+          <button className="retry-btn" onClick={() => window.location.reload()}>Retry</button>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -164,15 +219,15 @@ function App() {
           menuButtonColor={scrolled ? '#111' : '#111'}
           openMenuButtonColor="#111"
           changeMenuColorOnOpen={false}
-          colors={['#dc9d75ff', '#e85d04']}
+          colors={['#dc9d75', '#e85d04']}
           accentColor="#e85d04"
           displaySocials={true}
           displayItemNumbering={true}
           items={[
-            { label: 'Home', ariaLabel: 'Go to home page', link: '#', onClick: () => handleNavigate('Home') },
-            { label: 'Catalogue', ariaLabel: 'View our projects', link: '#', onClick: () => handleNavigate('Catalogue') },
-            { label: 'Map', ariaLabel: 'View map of properties', link: '#', onClick: () => handleNavigate('Map') },
-            { label: 'Admin', ariaLabel: 'Admin dashboard', link: '#', onClick: () => handleNavigate('Admin') },
+            { label: 'Home', ariaLabel: 'Go to home page', link: '#', onClick: () => navigateTo('Home') },
+            { label: 'Catalogue', ariaLabel: 'View our projects', link: '#', onClick: () => navigateTo('Catalogue') },
+            { label: 'Map', ariaLabel: 'View map of properties', link: '#', onClick: () => navigateTo('Map') },
+            { label: 'Admin', ariaLabel: 'Admin dashboard', link: '#', onClick: () => navigateTo('Admin') },
             { label: 'Contact', ariaLabel: 'Get in touch', link: '#', onClick: () => { } }
           ]}
           socialItems={[
@@ -186,31 +241,58 @@ function App() {
       <Navbar
         scrolled={scrolled}
         activePage={activePage}
-        onNavigate={handleNavigate}
+        onNavigate={navigateTo}
       />
 
       <main>
         {activePage === 'Admin' ? (
-          <AdminDashboard
-            properties={properties}
-            onAdd={handleAddProperty}
-            onUpdate={handleUpdateProperty}
-            onDelete={handleDeleteProperty}
-          />
+          adminAuthenticated ? (
+            <AdminDashboard
+              properties={properties}
+              onAdd={handleAddProperty}
+              onUpdate={handleUpdateProperty}
+              onDelete={handleDeleteProperty}
+              onLogout={handleAdminLogout}
+            />
+          ) : (
+            <section className="admin-login-page">
+              <div className="admin-login-card">
+                <h2>Admin Access</h2>
+                <p>Enter the admin password to continue.</p>
+                <form onSubmit={handleAdminLogin}>
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    value={adminPasswordInput}
+                    onChange={(e) => { setAdminPasswordInput(e.target.value); setAdminPasswordError(false); }}
+                    required
+                    autoFocus
+                  />
+                  {adminPasswordError && <p className="admin-login-error">Incorrect password.</p>}
+                  <button type="submit">Sign In</button>
+                </form>
+                <button className="admin-login-back" onClick={() => navigateTo('Home')}>← Back to Home</button>
+              </div>
+            </section>
+          )
         ) : activePage === 'PropertyDetail' && selectedPropertyId ? (
           <PropertyDetail
             properties={properties}
             propertyId={selectedPropertyId}
-            onBack={handleBackFromDetail}
+            onBack={goBack}
           />
         ) : activePage === 'Map' ? (
-          <MapView properties={properties} onViewDetail={handleViewDetail} />
+          <MapView properties={properties} onViewDetail={viewDetail} />
         ) : activePage === 'Catalogue' ? (
-          <Catalogue properties={properties} onViewDetail={handleViewDetail} />
+          <Catalogue
+            properties={filteredProperties}
+            allProperties={properties}
+            onViewDetail={viewDetail}
+          />
         ) : (
           <>
-            <Hero />
-            <Listings properties={properties} onViewDetail={handleViewDetail} />
+            <Hero onSearch={handleSearch} />
+            <Listings properties={properties} onViewDetail={viewDetail} />
           </>
         )}
       </main>

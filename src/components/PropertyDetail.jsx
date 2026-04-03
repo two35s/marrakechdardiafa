@@ -8,12 +8,11 @@ import {
 
 export default function PropertyDetail({ properties, propertyId, onBack }) {
   const [activeImage, setActiveImage] = useState(0);
-  const [liked, setLiked] = useState(false);
   const [showContact, setShowContact] = useState(false);
+  const [contactSent, setContactSent] = useState(false);
 
   const property = properties.find(p => p.id === propertyId);
 
-  // Scroll to top on mount
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [propertyId]);
@@ -46,22 +45,30 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
     'Underfloor': <Thermometer size={20} weight="regular" />,
   };
 
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    // TODO: Connect to backend email/API service
+    setContactSent(true);
+    setTimeout(() => {
+      setShowContact(false);
+      setContactSent(false);
+    }, 2000);
+  };
+
   return (
     <section className="detail-page">
       <div className="detail-inner">
 
-        {/* Back navigation */}
         <button className="back-btn" onClick={onBack}>
           <ArrowLeft size={18} weight="bold" />
           Back
         </button>
 
-        {/* Gallery */}
         <div className="detail-gallery">
           <div className="gallery-main">
             <img
               src={property.gallery[activeImage]}
-              alt={`${property.address} — photo ${activeImage + 1}`}
+              alt={`${property.address} — ${property.details.type}, ${property.rooms} rooms`}
               className="gallery-main-img"
             />
             <div className="gallery-nav">
@@ -69,6 +76,7 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
                 className="gallery-arrow gallery-arrow-left"
                 onClick={() => setActiveImage(i => (i - 1 + property.gallery.length) % property.gallery.length)}
                 aria-label="Previous image"
+                type="button"
               >
                 <CaretLeft size={24} weight="bold" />
               </button>
@@ -76,6 +84,7 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
                 className="gallery-arrow gallery-arrow-right"
                 onClick={() => setActiveImage(i => (i + 1) % property.gallery.length)}
                 aria-label="Next image"
+                type="button"
               >
                 <CaretRight size={24} weight="bold" />
               </button>
@@ -86,37 +95,28 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
             {property.gallery.map((img, i) => (
               <button
                 key={i}
+                type="button"
                 className={`gallery-thumb ${activeImage === i ? 'active' : ''}`}
                 onClick={() => setActiveImage(i)}
               >
-                <img src={img} alt={`Thumbnail ${i + 1}`} />
+                <img src={img} alt={`Thumbnail ${i + 1} — ${property.address}`} />
               </button>
             ))}
           </div>
         </div>
 
-        {/* Content grid */}
         <div className="detail-content">
 
-          {/* Left: main info */}
           <div className="detail-main">
 
-            {/* Title row */}
             <div className="detail-title-row">
               <div>
                 <h1 className="detail-address">{property.address}</h1>
                 <span className="detail-type">{property.details.type}</span>
               </div>
-              <button
-                className={`detail-like ${liked ? 'liked' : ''}`}
-                onClick={() => setLiked(!liked)}
-                aria-label={liked ? 'Unlike' : 'Like'}
-              >
-                <Heart size={24} weight={liked ? 'fill' : 'regular'} />
-              </button>
+              <LikeButton propertyId={property.id} />
             </div>
 
-            {/* Badges */}
             <div className="detail-badges">
               {property.badges.includes('Available') && (
                 <span className="badge badge-available">
@@ -138,7 +138,6 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
               )}
             </div>
 
-            {/* Quick stats */}
             <div className="detail-stats">
               <div className="stat-item">
                 <Bed size={20} weight="regular" />
@@ -165,13 +164,11 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
               </div>
             </div>
 
-            {/* Description */}
             <div className="detail-section">
               <h2 className="section-heading">About this property</h2>
               <p className="detail-description">{property.description}</p>
             </div>
 
-            {/* Amenities */}
             <div className="detail-section">
               <h2 className="section-heading">Amenities</h2>
               <div className="amenities-grid">
@@ -186,7 +183,6 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
               </div>
             </div>
 
-            {/* Property details */}
             <div className="detail-section">
               <h2 className="section-heading">Property details</h2>
               <div className="details-grid">
@@ -218,7 +214,6 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
             </div>
           </div>
 
-          {/* Right: sticky sidebar */}
           <aside className="detail-sidebar">
             <div className="sidebar-card">
               <div className="sidebar-price">
@@ -244,7 +239,7 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
               <button className="sidebar-cta" onClick={() => setShowContact(true)}>
                 Request a tour
               </button>
-              <button className="sidebar-secondary">
+              <button className="sidebar-secondary" type="button">
                 <EnvelopeSimple size={18} weight="regular" />
                 Message the host
               </button>
@@ -252,30 +247,75 @@ export default function PropertyDetail({ properties, propertyId, onBack }) {
           </aside>
         </div>
 
-        {/* Contact modal */}
         {showContact && (
           <>
-            <div className="modal-overlay" onClick={() => setShowContact(false)}></div>
+            <div className="modal-overlay" onClick={() => { setShowContact(false); setContactSent(false); }}></div>
             <div className="contact-modal">
               <div className="modal-header">
-                <h3>Request a tour</h3>
-                <button className="modal-close" onClick={() => setShowContact(false)}>
+                <h3>{contactSent ? 'Request Sent!' : 'Request a tour'}</h3>
+                <button className="modal-close" onClick={() => { setShowContact(false); setContactSent(false); }} type="button">
                   <X size={20} weight="bold" />
                 </button>
               </div>
-              <p className="modal-address">{property.address} — {property.price} MAD / mo</p>
-              <form className="modal-form" onSubmit={(e) => { e.preventDefault(); alert("Tour request sent successfully!"); setShowContact(false); }}>
-                <input type="text" placeholder="Your name" required />
-                <input type="email" placeholder="Email address" required />
-                <input type="tel" placeholder="Phone number" />
-                <textarea placeholder="Message (optional)" rows="3"></textarea>
-                <button type="submit" className="modal-submit">Send request</button>
-              </form>
+              {contactSent ? (
+                <p className="modal-success">We'll get back to you shortly about {property.address}.</p>
+              ) : (
+                <>
+                  <p className="modal-address">{property.address} — {property.price} MAD / mo</p>
+                  <form className="modal-form" onSubmit={handleContactSubmit}>
+                    <input type="text" placeholder="Your name" required />
+                    <input type="email" placeholder="Email address" required />
+                    <input type="tel" placeholder="Phone number" />
+                    <textarea placeholder="Message (optional)" rows="3"></textarea>
+                    <button type="submit" className="modal-submit">Send request</button>
+                  </form>
+                </>
+              )}
             </div>
           </>
         )}
 
       </div>
     </section>
+  );
+}
+
+function LikeButton({ propertyId }) {
+  const [liked, setLiked] = useState(() => {
+    try {
+      const stored = localStorage.getItem('liked_properties');
+      return stored ? JSON.parse(stored).includes(propertyId) : false;
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleLike = () => {
+    setLiked(prev => {
+      const next = !prev;
+      try {
+        const stored = localStorage.getItem('liked_properties');
+        const likedIds = stored ? JSON.parse(stored) : [];
+        if (next) {
+          if (!likedIds.includes(propertyId)) likedIds.push(propertyId);
+        } else {
+          const idx = likedIds.indexOf(propertyId);
+          if (idx > -1) likedIds.splice(idx, 1);
+        }
+        localStorage.setItem('liked_properties', JSON.stringify(likedIds));
+      } catch { /* storage unavailable */ }
+      return next;
+    });
+  };
+
+  return (
+    <button
+      className={`detail-like ${liked ? 'liked' : ''}`}
+      onClick={toggleLike}
+      aria-label={liked ? 'Unlike' : 'Like'}
+      type="button"
+    >
+      <Heart size={24} weight={liked ? 'fill' : 'regular'} />
+    </button>
   );
 }

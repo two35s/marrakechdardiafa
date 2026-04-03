@@ -1,8 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Hardcoding temporarily so you don't have to restart Vite!
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://ozjlwgolqskelxxtkdly.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_pNa0wSSHXslidRvmhOjiCg_lfh-7xIC';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn(
+    'Missing Supabase credentials. Copy .env.example to .env.local and fill in your credentials.'
+  );
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 

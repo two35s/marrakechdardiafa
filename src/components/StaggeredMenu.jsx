@@ -361,7 +361,6 @@ export const StaggeredMenu = ({
       <div
         className={`mobile-overlay ${open ? 'visible' : ''}`}
         onClick={closeMenu}
-        style={{ zIndex: 35, position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', opacity: open ? 1 : 0, visibility: open ? 'visible' : 'hidden', transition: 'all 0.25s ease', pointerEvents: open ? 'auto' : 'none' }}
       ></div>
       <div
         className={(className ? className + ' ' : '') + 'staggered-menu-wrapper' + (isFixed ? ' fixed-wrapper' : '')}
