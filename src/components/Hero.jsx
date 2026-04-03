@@ -7,8 +7,8 @@ const heroSlides = [
     alt: 'Luxury Marrakech riad courtyard with fountain'
   },
   {
-    src: 'https://images.unsplash.com/photo-1548017029-8e0e3e3b5e24?w=1200&q=80',
-    alt: 'Marrakech Medina rooftop with Atlas Mountains view'
+    src: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=1200&q=80',
+    alt: 'Marrakech Medina streets and architecture'
   },
   {
     src: 'https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=1200&q=80',
@@ -71,18 +71,6 @@ export default function Hero({ onSearch }) {
             <button className="hero-slide-arrow hero-slide-arrow-right" onClick={nextSlide} type="button" aria-label="Next slide">
               <CaretRight size={24} weight="bold" />
             </button>
-          </div>
-
-          <div className="hero-slide-dots">
-            {heroSlides.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                className={`hero-slide-dot ${i === currentSlide ? 'active' : ''}`}
-                onClick={() => setCurrentSlide(i)}
-                aria-label={`Go to slide ${i + 1}`}
-              />
-            ))}
           </div>
 
           <div className="search-bar desktop-only">
