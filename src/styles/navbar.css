@@ -25,17 +25,23 @@
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 7px;
   text-decoration: none;
   color: var(--ink);
-  font-weight: 600;
-  font-size: 15px;
-  letter-spacing: -0.3px;
   white-space: nowrap;
 }
 
-.logo-icon { width: 22px; height: 22px; flex-shrink: 0; }
-.logo-dot { color: #4A90D9; }
+.nav-logo-text {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  text-transform: lowercase;
+}
+
+.nav-logo-accent {
+  color: #c46b2e;
+  font-weight: 600;
+}
 
 .nav-left { display: flex; align-items: center; gap: 16px; }
 

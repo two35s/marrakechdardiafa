@@ -1,4 +1,4 @@
-import { House, SquaresFour, MapPin, Gear } from '@phosphor-icons/react';
+import { SquaresFour, MapPin, Gear } from '@phosphor-icons/react';
 export default function Navbar({ scrolled, activePage, onNavigate }) {
 
   return (
@@ -6,8 +6,7 @@ export default function Navbar({ scrolled, activePage, onNavigate }) {
       <div className="nav-inner">
         <div className="nav-left">
           <a className="nav-logo" href="#" onClick={(e) => { e.preventDefault(); onNavigate('Home'); }} role="button" aria-label="Go to home">
-            <House size={24} weight="duotone" color="#4A90D9" className="logo-icon" />
-            <span>marrakechdardiafa</span>
+            <span className="nav-logo-text">marrakech<span className="nav-logo-accent">dar diafa</span></span>
           </a>
         </div>
 

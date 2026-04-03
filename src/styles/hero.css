@@ -8,11 +8,24 @@
 
 .hero-title {
   font-size: clamp(32px, 5vw, 52px);
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -1.5px;
   line-height: 1.1;
-  margin-bottom: 20px;
+  margin-bottom: 6px;
   color: var(--ink);
+}
+
+.hero-title-accent {
+  color: #c46b2e;
+  font-weight: 600;
+}
+
+.hero-subtitle {
+  font-size: clamp(16px, 2.5vw, 20px);
+  font-weight: 400;
+  color: var(--ink-secondary);
+  margin-bottom: 20px;
+  letter-spacing: -0.3px;
 }
 
 .hero-image-wrap {
