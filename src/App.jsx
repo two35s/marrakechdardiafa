@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Listings from './components/Listings';
 import Catalogue from './components/Catalogue';
 import PropertyDetail from './components/PropertyDetail';
-import MapView from './components/MapView';
-import StaggeredMenu from './components/StaggeredMenu';
-import AdminDashboard from './components/AdminDashboard';
 import { supabase, mapSupabaseToProperty, mapPropertyToSupabase } from './lib/supabase';
+
+const MapView = lazy(() => import('./components/MapView'));
+const StaggeredMenu = lazy(() => import('./components/StaggeredMenu'));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 
 const REPO_PREFIX = '/marrakechdardiafa';
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
@@ -213,7 +214,8 @@ function App() {
   return (
     <>
       <div className="mobile-only">
-        <StaggeredMenu
+        <Suspense fallback={null}>
+          <StaggeredMenu
           position="right"
           isFixed={true}
           menuButtonColor={scrolled ? '#111' : '#111'}
@@ -235,7 +237,8 @@ function App() {
             { label: 'Twitter', link: 'https://twitter.com' },
             { label: 'LinkedIn', link: 'https://linkedin.com' }
           ]}
-        />
+          />
+        </Suspense>
       </div>
 
       <Navbar
@@ -247,13 +250,15 @@ function App() {
       <main>
         {activePage === 'Admin' ? (
           adminAuthenticated ? (
-            <AdminDashboard
-              properties={properties}
-              onAdd={handleAddProperty}
-              onUpdate={handleUpdateProperty}
-              onDelete={handleDeleteProperty}
-              onLogout={handleAdminLogout}
-            />
+            <Suspense fallback={<div className="loading-screen"><div className="loading-spinner"></div></div>}>
+              <AdminDashboard
+                properties={properties}
+                onAdd={handleAddProperty}
+                onUpdate={handleUpdateProperty}
+                onDelete={handleDeleteProperty}
+                onLogout={handleAdminLogout}
+              />
+            </Suspense>
           ) : (
             <section className="admin-login-page">
               <div className="admin-login-card">
@@ -282,7 +287,9 @@ function App() {
             onBack={goBack}
           />
         ) : activePage === 'Map' ? (
-          <MapView properties={properties} onViewDetail={viewDetail} />
+          <Suspense fallback={<div className="loading-screen"><div className="loading-spinner"></div></div>}>
+            <MapView properties={properties} onViewDetail={viewDetail} />
+          </Suspense>
         ) : activePage === 'Catalogue' ? (
           <Catalogue
             properties={filteredProperties}
