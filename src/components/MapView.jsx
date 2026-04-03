@@ -173,34 +173,9 @@ export default function MapView({ properties, onViewDetail }) {
     });
   }, [filteredProperties]);
 
-  // Update markers when filtered properties change
-  useEffect(() => {
-    if (!mapInstanceRef.current) return;
-
-    // Remove old markers
-    markersRef.current.forEach(marker => marker.remove());
-    markersRef.current = [];
-
-    // Add markers for filtered properties
-    filteredProperties.forEach((prop) => {
-      const marker = L.marker([prop.lat, prop.lng], {
-        icon: createMarkerIcon(prop.price, false),
-      }).addTo(map);
-
-      marker.propertyId = prop.id;
-
-      marker.on('click', () => {
-        setActiveProperty(prop);
-        updateMarkers(prop.id);
-      });
-
-      markersRef.current.push(marker);
-    });
-  }, [filteredProperties]);
-
   const updateMarkers = (activeId) => {
     markersRef.current.forEach((marker) => {
-      const prop = properties.find(p => p.id === marker.propertyId);
+      const prop = filteredProperties.find(p => p.id === marker.propertyId);
       if (prop) {
         marker.setIcon(createMarkerIcon(prop.price, prop.id === activeId));
       }

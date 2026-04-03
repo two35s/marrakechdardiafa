@@ -31,7 +31,6 @@ function App() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchFilters, setSearchFilters] = useState(null);
 
   const [activePage, setActivePage] = useState(() => parsePath().page);
   const [selectedPropertyId, setSelectedPropertyId] = useState(() => parsePath().id);
@@ -157,35 +156,8 @@ function App() {
     }
   };
 
-  const handleSearch = (filters) => {
-    setSearchFilters(filters);
-    navigateTo('Catalogue');
-  };
-
-  // Filtered properties for Catalogue
-  const filteredProperties = (() => {
-    if (!searchFilters) return properties;
-    let result = [...properties];
-    if (searchFilters.district) {
-      const q = searchFilters.district.toLowerCase();
-      result = result.filter(p => p.address?.toLowerCase().includes(q));
-    }
-    if (searchFilters.rooms && searchFilters.rooms !== 'Rooms') {
-      if (searchFilters.rooms === '4+') {
-        result = result.filter(p => p.rooms >= 4);
-      } else {
-        result = result.filter(p => p.rooms === Number(searchFilters.rooms));
-      }
-    }
-    if (searchFilters.price && searchFilters.price !== 'Price') {
-      const [min, max] = searchFilters.price.split('-').map(Number);
-      result = result.filter(p => {
-        if (max) return p.price >= min && p.price <= max;
-        return p.price >= min;
-      });
-    }
-    return result;
-  })();
+  // Filtered properties for Catalogue — always returns all properties since Hero search removed
+  const filteredProperties = properties;
 
   if (loading) {
     return (
@@ -298,7 +270,7 @@ function App() {
           />
         ) : (
           <>
-            <Hero onSearch={handleSearch} />
+            <Hero />
             <Listings properties={properties} onViewDetail={viewDetail} />
           </>
         )}
