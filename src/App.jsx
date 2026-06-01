@@ -13,6 +13,13 @@ const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const REPO_PREFIX = '/marrakechdardiafa';
 
 function parsePath() {
+  // Handle GitHub Pages 404 → hash redirect (e.g. index.html#/marrakechdardiafa/admin)
+  const hash = window.location.hash;
+  if (hash.startsWith('#/')) {
+    let restored = hash.slice(1); // e.g. /marrakechdardiafa/admin
+    window.history.replaceState({}, '', restored);
+  }
+
   let path = window.location.pathname.toLowerCase();
   if (path.startsWith(REPO_PREFIX)) path = path.slice(REPO_PREFIX.length) || '/';
   const propertyMatch = path.match(/^\/property\/([a-zA-Z0-9-]+)$/);
