@@ -7,8 +7,7 @@ import Catalogue from './components/Catalogue';
 import PropertyDetail from './components/PropertyDetail';
 import { supabase, mapSupabaseToProperty, mapPropertyToSupabase } from './lib/supabase';
 
-const MapView      = lazy(() => import('./components/MapView'));
-const StaggeredMenu = lazy(() => import('./components/StaggeredMenu'));
+const MapView        = lazy(() => import('./components/MapView'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 
 const REPO_PREFIX = '/marrakechdardiafa';
@@ -186,34 +185,6 @@ function App() {
 
   return (
     <>
-      <div className="mobile-only">
-        <Suspense fallback={null}>
-          <StaggeredMenu
-            position="right"
-            isFixed={true}
-            menuButtonColor="#111"
-            openMenuButtonColor="#111"
-            changeMenuColorOnOpen={false}
-            colors={['#c46b2e', '#a05520']}
-            accentColor="#c46b2e"
-            displaySocials={true}
-            displayItemNumbering={true}
-            items={[
-              { label: 'Home',      ariaLabel: 'Go to home page',          link: '#', onClick: () => navigateTo('Home')      },
-              { label: 'Catalogue', ariaLabel: 'View our projects',         link: '#', onClick: () => navigateTo('Catalogue') },
-              { label: 'Map',       ariaLabel: 'View map of properties',    link: '#', onClick: () => navigateTo('Map')       },
-              { label: 'Admin',     ariaLabel: 'Admin dashboard',           link: '#', onClick: () => navigateTo('Admin')     },
-              { label: 'Contact',   ariaLabel: 'Get in touch',              link: '#', onClick: () => {}                      },
-            ]}
-            socialItems={[
-              { label: 'GitHub',   link: 'https://github.com' },
-              { label: 'Twitter',  link: 'https://twitter.com' },
-              { label: 'LinkedIn', link: 'https://linkedin.com' },
-            ]}
-          />
-        </Suspense>
-      </div>
-
       <Navbar scrolled={scrolled} activePage={activePage} onNavigate={navigateTo} />
 
       <main>
