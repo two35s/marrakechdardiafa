@@ -247,10 +247,11 @@
   background: rgba(0,0,0,0.45);
   z-index: 200;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.3s ease;
   backdrop-filter: blur(2px);
 }
-.mob-backdrop.visible { opacity: 1; }
+.mob-backdrop.visible { opacity: 1; pointer-events: auto; }
 
 /* ─── Mobile Drawer ──────────────────────────────────────────────── */
 .mob-drawer {
@@ -264,11 +265,12 @@
   z-index: 201;
   flex-direction: column;
   transform: translateX(100%);
+  pointer-events: none;
   transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: -16px 0 48px rgba(0,0,0,0.35);
   overflow-y: auto;
 }
-.mob-drawer.open { transform: translateX(0); }
+.mob-drawer.open { transform: translateX(0); pointer-events: auto; }
 
 /* Drawer header */
 .mob-drawer-header {
