@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { WhatsappLogo, List, X, House, BookOpen, MapPin, Phone } from '@phosphor-icons/react';
 
-const WHATSAPP_NUMBER = '212600000000';
+const WHATSAPP_NUMBER = '212665225272';
 
 const NAV_ITEMS = [
   { label: 'Home',      page: 'Home',      icon: House    },
