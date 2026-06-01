@@ -13,7 +13,7 @@ const AVAILABLE_AMENITIES = [
 ];
 
 const AVAILABLE_BADGES  = ['Available', 'Verified', 'Realtor'];
-const PROPERTY_TYPES    = ['Apartment', 'Studio', 'Penthouse', 'Villa', 'Loft', 'Duplex'];
+const PROPERTY_TYPES    = ['Apartment', 'Studio', 'Penthouse', 'Villa', 'Loft', 'Duplex', 'Land', 'Riad'];
 const HEATING_TYPES     = ['Reversible AC', 'Electric', 'Individual Gas', 'Underfloor', 'None'];
 const AVAILABLE_IMAGES  = ['/apartment_card1.png', '/apartment_hero.png', '/apartment_card3.png'];
 
