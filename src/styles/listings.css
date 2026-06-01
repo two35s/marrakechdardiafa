@@ -1,26 +1,60 @@
-.listings { padding: 72px 0 0; }
-.listings-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.listings { padding: 64px 0 0; }
+.listings-inner { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
 
-.listings-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.listings-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px; gap: 16px; }
 
-.listings-title { font-size: clamp(20px, 3vw, 26px); font-weight: 800; letter-spacing: -0.6px; }
+.listings-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.listings-title em {
+  font-style: italic;
+  color: var(--accent);
+}
 
 .listing-arrows { display: flex; gap: 6px; }
 
 .arrow-btn {
-  width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--border);
-  background: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-  color: var(--ink); transition: all var(--ease); line-height: 1;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  transition: all var(--ease);
 }
-.arrow-btn:hover:not(:disabled) { background: var(--border-light); border-color: var(--ink-muted); }
-.arrow-btn:disabled { opacity: 0.3; cursor: default; }
+
+.arrow-btn:hover:not(:disabled) {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: white;
+  transform: scale(1.06);
+}
+
+.arrow-btn:disabled { opacity: 0.25; cursor: default; }
 
 .cards-track-wrap { overflow: hidden; }
-.cards-track { display: flex; gap: 20px; transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+.cards-track { display: flex; gap: 20px; transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1); }
+
+@media (max-width: 1024px) {
+  .listings-inner { padding: 0 32px; }
+}
 
 @media (max-width: 768px) {
-  .listings { padding: 88px 0 0; }
-  .listings-inner { padding: 0 16px; }
-  .listings-header { margin-bottom: 18px; }
+  .listings { padding: 48px 0 0; }
+  .listings-inner { padding: 0 20px; }
+  .listings-header { margin-bottom: 20px; }
 }
-@media (max-width: 480px) { .listings { padding-top: 20px; } }
+
+@media (max-width: 480px) {
+  .listings { padding-top: 36px; }
+}

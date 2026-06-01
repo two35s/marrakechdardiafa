@@ -37,7 +37,7 @@ export default function Listings({ properties, onViewDetail }) {
     <section className="listings">
       <div className="listings-inner">
         <div className="listings-header">
-          <h2 className="listings-title">Popular accommodation</h2>
+          <h2 className="listings-title">Popular <em>accommodation</em></h2>
           <div className="listing-arrows desktop-only">
             <button 
               className="arrow-btn" 

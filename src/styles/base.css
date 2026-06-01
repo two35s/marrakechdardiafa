@@ -28,7 +28,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: var(--ink);
   font-size: 14px;
@@ -80,18 +80,7 @@ a:focus-visible, button:focus-visible {
 .mobile-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 300; opacity: 0; visibility: hidden; transition: all 0.25s ease; }
 .mobile-overlay.visible { opacity: 1; visibility: visible; }
 
-.admin-login-page { display: flex; align-items: center; justify-content: center; min-height: calc(100dvh - 56px); padding: 24px; }
-.admin-login-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 40px 32px; width: min(90vw, 380px); text-align: center; box-shadow: var(--shadow-md); }
-.admin-login-card h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
-.admin-login-card p { font-size: 14px; color: var(--ink-muted); margin-bottom: 24px; }
-.admin-login-card form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
-.admin-login-card input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-md); font-family: inherit; font-size: 14px; color: var(--ink); background: var(--bg); outline: none; transition: border-color var(--ease); }
-.admin-login-card input:focus { border-color: var(--accent); }
-.admin-login-error { color: #d93025; font-size: 13px; margin-top: 4px; }
-.admin-login-card form button { width: 100%; background: var(--ink); color: white; border: none; border-radius: var(--radius-pill); padding: 13px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity var(--ease); }
-.admin-login-card form button:hover { opacity: 0.85; }
-.admin-login-back { background: none; border: none; color: var(--ink-muted); font-family: inherit; font-size: 13px; cursor: pointer; transition: color var(--ease); }
-.admin-login-back:hover { color: var(--ink); }
+/* admin login styles live in admin.css */
 .modal-success { text-align: center; padding: 32px 0; font-size: 15px; color: var(--green); font-weight: 500; }
 
 .catalogue-results-count { font-size: 13px; color: var(--ink-muted); margin-bottom: 20px; font-weight: 500; }

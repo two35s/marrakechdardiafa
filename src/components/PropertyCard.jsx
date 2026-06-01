@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CaretLeft, CaretRight, Heart, MapPin, CheckCircle, SealCheck, Building, Bed, Stack, BoundingBox } from '@phosphor-icons/react';
 
-export default function PropertyCard({ property, onViewDetail }) {
+export default function PropertyCard({ property, onViewDetail, style }) {
   const [activeDot, setActiveDot] = useState(0);
 
   const gallery = property.gallery && property.gallery.length > 0 ? property.gallery : [property.image];
@@ -42,7 +42,7 @@ export default function PropertyCard({ property, onViewDetail }) {
   };
 
   return (
-    <article className="property-card clickable" onClick={handleCardClick}>
+    <article className="property-card clickable" onClick={handleCardClick} style={style}>
       <div className="card-img-wrap">
         <img src={gallery[activeDot]} alt={property.address} className="card-img" />
         <button 

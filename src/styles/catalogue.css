@@ -1,18 +1,303 @@
-.catalogue-page { padding: 72px 0 48px; }
-.catalogue-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+/* ─── Catalogue Page ─────────────────────────────────────────────── */
+.catalogue-page { padding-bottom: 80px; }
 
-.catalogue-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 14px; }
-.catalogue-title { font-size: clamp(24px, 4vw, 36px); font-weight: 800; letter-spacing: -0.8px; }
+/* ─── Page Hero Header ───────────────────────────────────────────── */
+.cat-hero {
+  position: relative;
+  background: #0e0c0a;
+  overflow: hidden;
+  padding: 64px 0 52px;
+}
 
-.catalogue-filters { display: flex; align-items: center; gap: 10px; background: var(--surface); padding: 6px 14px; border-radius: var(--radius-pill); box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
-.filter-divider { width: 1px; height: 18px; background: var(--border); }
+.cat-hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+  position: relative;
+  z-index: 1;
+}
 
-.catalogue-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; }
-.catalogue-grid .property-card { width: 100%; }
+/* Faint geometric background using CSS */
+.cat-hero-ornament {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(196,107,46,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,107,46,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.cat-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 18px;
+}
+
+.cat-eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.cat-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(48px, 7vw, 88px);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 0.95;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.cat-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: rgba(255,255,255,0.65);
+}
+
+.cat-subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.01em;
+}
+
+/* ─── Inner / Content ────────────────────────────────────────────── */
+.catalogue-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+/* ─── Toolbar ────────────────────────────────────────────────────── */
+.cat-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px 0 0;
+  flex-wrap: wrap;
+}
+
+.cat-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cat-filters-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+/* Individual filter pill */
+.cat-filter-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+
+.cat-filter-pill:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(196,107,46,0.12);
+}
+
+.cat-filter-icon { color: var(--ink-muted); flex-shrink: 0; }
+
+.cat-filter-pill select {
+  border: none;
+  background: none;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  appearance: none;
+  cursor: pointer;
+  padding-right: 4px;
+  min-width: 0;
+}
+
+.cat-filter-caret {
+  color: var(--ink-muted);
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+/* Active filter chips */
+.cat-active-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-left: 4px;
+}
+
+.cat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--accent-light);
+  color: var(--accent-dark);
+  border-radius: var(--radius-pill);
+  padding: 5px 10px 5px 12px;
+  border: 1px solid rgba(196,107,46,0.2);
+}
+
+.cat-chip button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  padding: 0;
+  opacity: 0.7;
+  transition: opacity var(--ease);
+}
+
+.cat-chip button:hover { opacity: 1; }
+
+/* Results count */
+.cat-count {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.cat-count strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.cat-count-of { color: var(--ink-muted); }
+
+/* ─── Divider ────────────────────────────────────────────────────── */
+.cat-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0 36px;
+}
+
+/* ─── Grid ───────────────────────────────────────────────────────── */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px 24px;
+}
+
+.cat-grid .property-card {
+  width: 100%;
+  opacity: 0;
+  animation: catCardIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 0.07s);
+}
+
+@keyframes catCardIn {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Empty State ────────────────────────────────────────────────── */
+.cat-empty {
+  text-align: center;
+  padding: 80px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.cat-empty-icon {
+  font-size: 40px;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.cat-empty-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.cat-empty-sub {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ink-muted);
+  margin-bottom: 8px;
+}
+
+.cat-empty-btn {
+  background: var(--ink);
+  color: white;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 12px 28px;
+  cursor: pointer;
+  transition: opacity var(--ease);
+  letter-spacing: 0.02em;
+}
+
+.cat-empty-btn:hover { opacity: 0.82; }
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .cat-hero-inner { padding: 0 32px; }
+  .catalogue-inner { padding: 0 32px; }
+  .cat-grid { grid-template-columns: repeat(2, 1fr); gap: 28px 20px; }
+}
 
 @media (max-width: 768px) {
-  .catalogue-page { padding: 88px 0 36px; }
-  .catalogue-inner { padding: 0 16px; }
-  .catalogue-filters { width: 100%; justify-content: center; }
-  .catalogue-grid { grid-template-columns: 1fr; gap: 18px; }
+  .cat-hero { padding: 48px 0 40px; }
+  .cat-hero-inner { padding: 0 20px; }
+  .catalogue-inner { padding: 0 20px; }
+
+  .cat-toolbar { flex-direction: column; align-items: flex-start; gap: 12px; padding-top: 24px; }
+  .cat-filters { width: 100%; }
+  .cat-filter-pill { flex: 1; justify-content: space-between; }
+  .cat-filter-pill select { flex: 1; }
+
+  .cat-grid { grid-template-columns: 1fr; gap: 24px; }
+}
+
+@media (max-width: 480px) {
+  .cat-filters-label { display: none; }
+  .cat-filter-pill { padding: 9px 12px; }
 }
