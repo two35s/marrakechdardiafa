@@ -40,7 +40,6 @@ function App() {
   const [selectedPropertyId, setSelectedPropertyId] = useState(() => parsePath().id);
 
   const [adminAuthenticated, setAdminAuthenticated] = useState(false);
-  const [adminEmail,         setAdminEmail]         = useState('');
   const [adminPassword,      setAdminPassword]      = useState('');
   const [adminLoginError,    setAdminLoginError]    = useState('');
   const [adminLoginLoading,  setAdminLoginLoading]  = useState(false);
@@ -128,11 +127,11 @@ function App() {
     setAdminLoginError('');
     setAdminLoginLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
-      email: adminEmail,
+      email: 'youssefbaaziz2077@gmail.com',
       password: adminPassword,
     });
     setAdminLoginLoading(false);
-    if (error) setAdminLoginError('Incorrect email or password.');
+    if (error) setAdminLoginError('Incorrect password.');
   };
 
   const handleAdminLogout = async () => {
@@ -213,19 +212,12 @@ function App() {
                 <p>Sign in with your admin account.</p>
                 <form onSubmit={handleAdminLogin}>
                   <input
-                    type="email"
-                    placeholder="Email"
-                    value={adminEmail}
-                    onChange={e => { setAdminEmail(e.target.value); setAdminLoginError(''); }}
-                    required
-                    autoFocus
-                  />
-                  <input
                     type="password"
                     placeholder="Password"
                     value={adminPassword}
                     onChange={e => { setAdminPassword(e.target.value); setAdminLoginError(''); }}
                     required
+                    autoFocus
                   />
                   {adminLoginError && <p className="admin-login-error">{adminLoginError}</p>}
                   <button type="submit" disabled={adminLoginLoading}>
