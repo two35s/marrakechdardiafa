@@ -218,6 +218,10 @@ function App() {
                     onChange={e => { setAdminPassword(e.target.value); setAdminLoginError(''); }}
                     required
                     autoFocus
+                    autoComplete="current-password"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck="false"
                   />
                   {adminLoginError && <p className="admin-login-error">{adminLoginError}</p>}
                   <button type="submit" disabled={adminLoginLoading}>
