@@ -1,67 +1,87 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Hero from './components/Hero';
 import Listings from './components/Listings';
 import Catalogue from './components/Catalogue';
 import PropertyDetail from './components/PropertyDetail';
 import { supabase, mapSupabaseToProperty, mapPropertyToSupabase } from './lib/supabase';
 
-const MapView = lazy(() => import('./components/MapView'));
+const MapView      = lazy(() => import('./components/MapView'));
 const StaggeredMenu = lazy(() => import('./components/StaggeredMenu'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 
 const REPO_PREFIX = '/marrakechdardiafa';
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
 
 function parsePath() {
   let path = window.location.pathname.toLowerCase();
-  if (path.startsWith(REPO_PREFIX)) {
-    path = path.slice(REPO_PREFIX.length) || '/';
-  }
+  if (path.startsWith(REPO_PREFIX)) path = path.slice(REPO_PREFIX.length) || '/';
   const propertyMatch = path.match(/^\/property\/([a-zA-Z0-9-]+)$/);
   if (propertyMatch) return { page: 'PropertyDetail', id: propertyMatch[1] };
   if (path === '/catalogue' || path === '/catalog') return { page: 'Catalogue', id: null };
-  if (path === '/map') return { page: 'Map', id: null };
+  if (path === '/map')   return { page: 'Map',   id: null };
   if (path === '/admin') return { page: 'Admin', id: null };
   return { page: 'Home', id: null };
 }
 
 function App() {
-  const [scrolled, setScrolled] = useState(false);
-  const [properties, setProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchFilters, setSearchFilters] = useState(null);
+  const [scrolled,    setScrolled]    = useState(false);
+  const [properties,  setProperties]  = useState([]);
+  const [loading,     setLoading]     = useState(true);
+  const [error,       setError]       = useState(null);
 
-  const [activePage, setActivePage] = useState(() => parsePath().page);
+  const [activePage,         setActivePage]         = useState(() => parsePath().page);
   const [selectedPropertyId, setSelectedPropertyId] = useState(() => parsePath().id);
 
-  // Admin authentication state
-  const [adminAuthenticated, setAdminAuthenticated] = useState(() => {
-    return sessionStorage.getItem('admin_auth') === 'true';
-  });
-  const [adminPasswordInput, setAdminPasswordInput] = useState('');
-  const [adminPasswordError, setAdminPasswordError] = useState(false);
+  const [adminAuthenticated, setAdminAuthenticated] = useState(false);
+  const [adminEmail,         setAdminEmail]         = useState('');
+  const [adminPassword,      setAdminPassword]      = useState('');
+  const [adminLoginError,    setAdminLoginError]    = useState('');
+  const [adminLoginLoading,  setAdminLoginLoading]  = useState(false);
 
+  // Auth state listener
   useEffect(() => {
-    const fetchProperties = async () => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setAdminAuthenticated(!!session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAdminAuthenticated(!!session);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Initial fetch
+  useEffect(() => {
+    const fetch = async () => {
       setLoading(true);
       setError(null);
       try {
         const { data, error } = await supabase.from('properties').select('*');
-        if (error) {
-          console.error('Error fetching properties:', error);
-          setError('Failed to load properties. Please try again later.');
-        } else if (data) {
-          setProperties(data.map(mapSupabaseToProperty));
-        }
-      } catch (err) {
-        console.error('Unexpected error:', err);
+        if (error) setError('Failed to load properties. Please try again later.');
+        else if (data) setProperties(data.map(mapSupabaseToProperty));
+      } catch {
         setError('An unexpected error occurred.');
       }
       setLoading(false);
     };
-    fetchProperties();
+    fetch();
+  }, []);
+
+  // Real-time subscription
+  useEffect(() => {
+    const channel = supabase
+      .channel('properties-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'properties' }, ({ new: row }) => {
+        setProperties(prev => [...prev, mapSupabaseToProperty(row)]);
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'properties' }, ({ new: row }) => {
+        setProperties(prev => prev.map(p => p.id === row.id ? mapSupabaseToProperty(row) : p));
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'properties' }, ({ old: row }) => {
+        setProperties(prev => prev.filter(p => p.id !== row.id));
+      })
+      .subscribe();
+    return () => supabase.removeChannel(channel);
   }, []);
 
   useEffect(() => {
@@ -75,9 +95,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 8);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -86,8 +104,7 @@ function App() {
     setActivePage(page);
     setSelectedPropertyId(null);
     const paths = { Catalogue: '/catalogue', Map: '/map', Admin: '/admin', Home: '/' };
-    const targetPath = paths[page] || '/';
-    window.history.pushState({}, '', REPO_PREFIX + targetPath);
+    window.history.pushState({}, '', REPO_PREFIX + (paths[page] || '/'));
     window.scrollTo(0, 0);
   };
 
@@ -98,67 +115,50 @@ function App() {
     window.scrollTo(0, 0);
   };
 
-  const goBack = () => {
-    window.history.back();
-  };
+  const goBack = () => window.history.back();
 
-  const handleAdminLogin = (e) => {
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
-    if (adminPasswordInput === ADMIN_PASSWORD) {
-      setAdminAuthenticated(true);
-      sessionStorage.setItem('admin_auth', 'true');
-      setAdminPasswordError(false);
-    } else {
-      setAdminPasswordError(true);
-    }
+    setAdminLoginError('');
+    setAdminLoginLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: adminEmail,
+      password: adminPassword,
+    });
+    setAdminLoginLoading(false);
+    if (error) setAdminLoginError('Incorrect email or password.');
   };
 
-  const handleAdminLogout = () => {
-    setAdminAuthenticated(false);
-    sessionStorage.removeItem('admin_auth');
+  const handleAdminLogout = async () => {
+    await supabase.auth.signOut();
     navigateTo('Home');
   };
 
-  // CRUD handlers
+  // CRUD handlers — throw on error so AdminDashboard can show a toast
   const handleAddProperty = async (newProperty) => {
-    const supabasePayload = mapPropertyToSupabase(newProperty);
-    const { data, error } = await supabase.from('properties').insert([supabasePayload]).select();
-    if (error) {
-      console.error('Error adding property:', error);
-      alert('Failed to add property.');
-    } else if (data && data.length > 0) {
-      const addedProp = mapSupabaseToProperty(data[0]);
-      setProperties(prev => [...prev, addedProp]);
-    }
+    const { data, error } = await supabase
+      .from('properties')
+      .insert([mapPropertyToSupabase(newProperty)])
+      .select();
+    if (error) throw new Error(error.message);
+    setProperties(prev => [...prev, mapSupabaseToProperty(data[0])]);
   };
 
   const handleUpdateProperty = async (updatedProperty) => {
-    const supabasePayload = mapPropertyToSupabase(updatedProperty);
-    const { data, error } = await supabase.from('properties')
-      .update(supabasePayload)
+    const { data, error } = await supabase
+      .from('properties')
+      .update(mapPropertyToSupabase(updatedProperty))
       .eq('id', updatedProperty.id)
       .select();
-    if (error) {
-      console.error('Error updating property:', error);
-      alert('Failed to update property.');
-    } else if (data && data.length > 0) {
-      const savedProp = mapSupabaseToProperty(data[0]);
-      setProperties(prev => prev.map(p => p.id === updatedProperty.id ? savedProp : p));
-    }
+    if (error) throw new Error(error.message);
+    setProperties(prev => prev.map(p => p.id === updatedProperty.id ? mapSupabaseToProperty(data[0]) : p));
   };
 
   const handleDeleteProperty = async (id) => {
     const { error } = await supabase.from('properties').delete().eq('id', id);
-    if (error) {
-      console.error('Error deleting property:', error);
-      alert('Failed to delete property.');
-    } else {
-      setProperties(prev => prev.filter(p => p.id !== id));
-    }
+    if (error) throw new Error(error.message);
+    setProperties(prev => prev.filter(p => p.id !== id));
   };
-
-  // Filtered properties for Catalogue — always returns all properties since Hero search removed
-  const filteredProperties = properties;
 
   if (loading) {
     return (
@@ -189,36 +189,32 @@ function App() {
       <div className="mobile-only">
         <Suspense fallback={null}>
           <StaggeredMenu
-          position="right"
-          isFixed={true}
-          menuButtonColor={scrolled ? '#111' : '#111'}
-          openMenuButtonColor="#111"
-          changeMenuColorOnOpen={false}
-          colors={['#c46b2e', '#a05520']}
-          accentColor="#c46b2e"
-          displaySocials={true}
-          displayItemNumbering={true}
-          items={[
-            { label: 'Home', ariaLabel: 'Go to home page', link: '#', onClick: () => navigateTo('Home') },
-            { label: 'Catalogue', ariaLabel: 'View our projects', link: '#', onClick: () => navigateTo('Catalogue') },
-            { label: 'Map', ariaLabel: 'View map of properties', link: '#', onClick: () => navigateTo('Map') },
-            { label: 'Admin', ariaLabel: 'Admin dashboard', link: '#', onClick: () => navigateTo('Admin') },
-            { label: 'Contact', ariaLabel: 'Get in touch', link: '#', onClick: () => { } }
-          ]}
-          socialItems={[
-            { label: 'GitHub', link: 'https://github.com' },
-            { label: 'Twitter', link: 'https://twitter.com' },
-            { label: 'LinkedIn', link: 'https://linkedin.com' }
-          ]}
+            position="right"
+            isFixed={true}
+            menuButtonColor="#111"
+            openMenuButtonColor="#111"
+            changeMenuColorOnOpen={false}
+            colors={['#c46b2e', '#a05520']}
+            accentColor="#c46b2e"
+            displaySocials={true}
+            displayItemNumbering={true}
+            items={[
+              { label: 'Home',      ariaLabel: 'Go to home page',          link: '#', onClick: () => navigateTo('Home')      },
+              { label: 'Catalogue', ariaLabel: 'View our projects',         link: '#', onClick: () => navigateTo('Catalogue') },
+              { label: 'Map',       ariaLabel: 'View map of properties',    link: '#', onClick: () => navigateTo('Map')       },
+              { label: 'Admin',     ariaLabel: 'Admin dashboard',           link: '#', onClick: () => navigateTo('Admin')     },
+              { label: 'Contact',   ariaLabel: 'Get in touch',              link: '#', onClick: () => {}                      },
+            ]}
+            socialItems={[
+              { label: 'GitHub',   link: 'https://github.com' },
+              { label: 'Twitter',  link: 'https://twitter.com' },
+              { label: 'LinkedIn', link: 'https://linkedin.com' },
+            ]}
           />
         </Suspense>
       </div>
 
-      <Navbar
-        scrolled={scrolled}
-        activePage={activePage}
-        onNavigate={navigateTo}
-      />
+      <Navbar scrolled={scrolled} activePage={activePage} onNavigate={navigateTo} />
 
       <main>
         {activePage === 'Admin' ? (
@@ -236,39 +232,40 @@ function App() {
             <section className="admin-login-page">
               <div className="admin-login-card">
                 <h2>Admin Access</h2>
-                <p>Enter the admin password to continue.</p>
+                <p>Sign in with your admin account.</p>
                 <form onSubmit={handleAdminLogin}>
                   <input
-                    type="password"
-                    placeholder="Password"
-                    value={adminPasswordInput}
-                    onChange={(e) => { setAdminPasswordInput(e.target.value); setAdminPasswordError(false); }}
+                    type="email"
+                    placeholder="Email"
+                    value={adminEmail}
+                    onChange={e => { setAdminEmail(e.target.value); setAdminLoginError(''); }}
                     required
                     autoFocus
                   />
-                  {adminPasswordError && <p className="admin-login-error">Incorrect password.</p>}
-                  <button type="submit">Sign In</button>
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    value={adminPassword}
+                    onChange={e => { setAdminPassword(e.target.value); setAdminLoginError(''); }}
+                    required
+                  />
+                  {adminLoginError && <p className="admin-login-error">{adminLoginError}</p>}
+                  <button type="submit" disabled={adminLoginLoading}>
+                    {adminLoginLoading ? 'Signing in…' : 'Sign In'}
+                  </button>
                 </form>
                 <button className="admin-login-back" onClick={() => navigateTo('Home')}>← Back to Home</button>
               </div>
             </section>
           )
         ) : activePage === 'PropertyDetail' && selectedPropertyId ? (
-          <PropertyDetail
-            properties={properties}
-            propertyId={selectedPropertyId}
-            onBack={goBack}
-          />
+          <PropertyDetail properties={properties} propertyId={selectedPropertyId} onBack={goBack} />
         ) : activePage === 'Map' ? (
           <Suspense fallback={<div className="loading-screen"><div className="loading-spinner"></div></div>}>
             <MapView properties={properties} onViewDetail={viewDetail} />
           </Suspense>
         ) : activePage === 'Catalogue' ? (
-          <Catalogue
-            properties={filteredProperties}
-            allProperties={properties}
-            onViewDetail={viewDetail}
-          />
+          <Catalogue properties={properties} allProperties={properties} onViewDetail={viewDetail} />
         ) : (
           <>
             <Hero />
@@ -276,6 +273,10 @@ function App() {
           </>
         )}
       </main>
+
+      {activePage !== 'Admin' && activePage !== 'PropertyDetail' && (
+        <Footer onNavigate={navigateTo} />
+      )}
     </>
   );
 }
